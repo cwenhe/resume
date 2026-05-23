@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>陈文核 - 算法工程师</title>
+<style>
+  :root {
+    --primary: #1a1a2e;
+    --accent: #0f3460;
+    --highlight: #e94560;
+    --text: #333;
+    --light: #f8f9fa;
+    --border: #e0e0e0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; color: var(--text); background: #f0f2f5; }
+
+  /* Header */
+  header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    color: white; padding: 60px 0 40px; text-align: center; position: relative; overflow: hidden;
+  }
+  header::before {
+    content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(233,69,96,0.15) 0%, transparent 60%);
+    animation: pulse 4s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+  .avatar {
+    width: 90px; height: 90px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--highlight), #ff8c42);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px; font-weight: bold; color: white;
+    margin: 0 auto 20px; position: relative; z-index: 1;
+    box-shadow: 0 8px 32px rgba(233,69,96,0.4);
+  }
+  header h1 { font-size: 2.2rem; font-weight: 700; position: relative; z-index: 1; }
+  .tagline { font-size: 1rem; opacity: 0.85; margin: 8px 0 20px; position: relative; z-index: 1; }
+  .contact-bar {
+    display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;
+    position: relative; z-index: 1;
+  }
+  .contact-bar span {
+    background: rgba(255,255,255,0.12); padding: 6px 16px; border-radius: 20px;
+    font-size: 0.85rem; backdrop-filter: blur(4px);
+  }
+
+  /* Nav */
+  nav {
+    background: white; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    display: flex; justify-content: center; gap: 0;
+  }
+  nav a {
+    padding: 16px 24px; text-decoration: none; color: #666; font-size: 0.9rem;
+    transition: all 0.3s; border-bottom: 3px solid transparent; font-weight: 500;
+  }
+  nav a:hover, nav a.active { color: var(--highlight); border-bottom-color: var(--highlight); }
+
+  /* Main */
+  main { max-width: 960px; margin: 40px auto; padding: 0 20px; }
+
+  /* Section */
+  section { margin-bottom: 32px; opacity: 0; transform: translateY(20px); transition: all 0.5s ease; }
+  section.visible { opacity: 1; transform: translateY(0); }
+  .section-title {
+    font-size: 1.1rem; font-weight: 700; color: var(--accent);
+    border-left: 4px solid var(--highlight); padding-left: 12px;
+    margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px;
+  }
+
+  /* Cards */
+  .card {
+    background: white; border-radius: 12px; padding: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 16px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+
+  /* Strengths */
+  .strengths-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .strength-item {
+    background: white; border-radius: 12px; padding: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border-top: 3px solid var(--highlight);
+    transition: transform 0.2s;
+  }
+  .strength-item:hover { transform: translateY(-3px); }
+  .strength-num {
+    width: 32px; height: 32px; background: var(--highlight); color: white;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: bold; font-size: 0.85rem; margin-bottom: 10px;
+  }
+  .strength-item p { font-size: 0.88rem; line-height: 1.7; color: #555; }
+
+  /* Timeline */
+  .timeline { position: relative; padding-left: 24px; }
+  .timeline::before {
+    content: ''; position: absolute; left: 6px; top: 0; bottom: 0;
+    width: 2px; background: linear-gradient(to bottom, var(--highlight), var(--accent));
+  }
+  .timeline-item { position: relative; margin-bottom: 24px; }
+  .timeline-item::before {
+    content: ''; position: absolute; left: -21px; top: 6px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--highlight); border: 2px solid white;
+    box-shadow: 0 0 0 3px rgba(233,69,96,0.2);
+  }
+  .job-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .job-title { font-size: 1.05rem; font-weight: 700; color: var(--primary); }
+  .job-company { font-size: 0.9rem; color: var(--highlight); font-weight: 600; margin-top: 2px; }
+  .job-date {
+    background: var(--light); padding: 4px 12px; border-radius: 12px;
+    font-size: 0.8rem; color: #888; white-space: nowrap;
+  }
+  .job-desc { font-size: 0.88rem; line-height: 1.8; color: #555; }
+  .job-desc li { margin-bottom: 6px; }
+  .achievement {
+    margin-top: 12px; padding: 12px 16px;
+    background: linear-gradient(135deg, #fff5f7, #fff);
+    border-left: 3px solid var(--highlight); border-radius: 0 8px 8px 0;
+  }
+  .achievement-title { font-size: 0.8rem; font-weight: 700; color: var(--highlight); margin-bottom: 6px; text-transform: uppercase; }
+  .achievement p, .achievement li { font-size: 0.85rem; color: #555; line-height: 1.7; }
+
+  /* Skills */
+  .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+  .skill-group { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+  .skill-group h4 { font-size: 0.85rem; color: var(--accent); font-weight: 700; margin-bottom: 12px; text-transform: uppercase; }
+  .skill-tag {
+    display: inline-block; padding: 4px 12px; margin: 4px 4px 4px 0;
+    background: var(--light); border-radius: 12px; font-size: 0.82rem; color: #555;
+    border: 1px solid var(--border); transition: all 0.2s;
+  }
+  .skill-tag:hover { background: var(--highlight); color: white; border-color: var(--highlight); }
+  .skill-tag.hot { background: rgba(233,69,96,0.08); border-color: rgba(233,69,96,0.3); color: var(--highlight); }
+
+  /* Projects */
+  .project-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 16px; }
+  .project-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .project-name { font-size: 1rem; font-weight: 700; color: var(--primary); }
+  .project-role { background: rgba(233,69,96,0.1); color: var(--highlight); padding: 3px 10px; border-radius: 10px; font-size: 0.8rem; font-weight: 600; }
+  .project-date { font-size: 0.8rem; color: #aaa; }
+
+  /* Stats */
+  .stats-bar { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 32px; }
+  .stat-card {
+    flex: 1; min-width: 140px; background: white; border-radius: 12px; padding: 20px;
+    text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border-bottom: 3px solid var(--highlight);
+  }
+  .stat-num { font-size: 2rem; font-weight: 800; color: var(--highlight); line-height: 1; }
+  .stat-label { font-size: 0.8rem; color: #888; margin-top: 6px; }
+
+  /* Education */
+  .edu-card { display: flex; align-items: center; gap: 20px; }
+  .edu-icon {
+    width: 48px; height: 48px; background: linear-gradient(135deg, var(--accent), var(--primary));
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+
+  /* Award */
+  .award { display: flex; align-items: center; gap: 12px; padding: 16px 20px; background: linear-gradient(135deg, #fff9e6, #fff); border-radius: 12px; border-left: 4px solid #f0a500; }
+  .award-icon { font-size: 24px; }
+
+  footer { text-align: center; padding: 40px 20px; color: #aaa; font-size: 0.85rem; }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.6rem; }
+    nav a { padding: 12px 14px; font-size: 0.82rem; }
+    .stats-bar { gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="avatar">陈</div>
+  <h1>陈文核</h1>
+  <p class="tagline">算法工程师 · APS排程专家 · 运筹优化</p>
+  <div class="contact-bar">
+    <span>男 · 36岁</span>
+    <span>📱 15985856370</span>
+    <span>✉️ 479558399@qq.com</span>
+    <span>💼 12年工作经验</span>
+  </div>
+</header>
+
+<nav>
+  <a href="#strengths" class="active">核心优势</a>
+  <a href="#experience">工作经历</a>
+  <a href="#projects">项目经历</a>
+  <a href="#skills">技能</a>
+  <a href="#education">教育</a>
+</nav>
+
+<main>
+
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="stat-card"><div class="stat-num">12</div><div class="stat-label">年工作经验</div></div>
+    <div class="stat-card"><div class="stat-num">6+</div><div class="stat-label">年APS/运筹优化</div></div>
+    <div class="stat-card"><div class="stat-num">7+</div><div class="stat-label">头部企业交付</div></div>
+    <div class="stat-card"><div class="stat-num">100%</div><div class="stat-label">核心引擎复用率</div></div>
+  </div>
+
+  <!-- Strengths -->
+  <section id="strengths">
+    <div class="section-title">核心优势</div>
+    <div class="strengths-grid">
+      <div class="strength-item">
+        <div class="strength-num">1</div>
+        <p><strong>高壁垒领域全链路落地</strong><br>近6年聚焦APS与运筹优化，具备航空排班与制造业排程两大高壁垒领域的完整交付能力。</p>
+      </div>
+      <div class="strength-item">
+        <div class="strength-num">2</div>
+        <p><strong>技术决策与架构演进</strong><br>主导核心技术栈从C++/Swig向纯Java的全量迁移，统一技术基线，消除跨团队协作瓶颈。</p>
+      </div>
+      <div class="strength-item">
+        <div class="strength-num">3</div>
+        <p><strong>算法建模与求解器</strong><br>熟练应用Gurobi求解器，将民航法规、人员资质、疲劳度等复杂约束抽象为可求解的数学模型。</p>
+      </div>
+      <div class="strength-item">
+        <div class="strength-num">4</div>
+        <p><strong>自研高性能规则引擎</strong><br>独立设计Java高性能规则求解引擎，支持工序/机台/物料多重约束实时排程，<strong>秒级出结果</strong>。</p>
+      </div>
+      <div class="strength-item">
+        <div class="strength-num">5</div>
+        <p><strong>多行业交付广度</strong><br>成功交付中粮可口可乐、联合利华、海信电子、立讯精密、郑煤机、奥克斯等10+家头部企业，覆盖快消、电子制造、装备制造多个行业，核心引擎100%复用，新项目实施周期缩短30%-50%。</p>
+      </div>
+      <div class="strength-item">
+        <div class="strength-num">6</div>
+        <p><strong>APS全场景产品落地</strong><br>覆盖计划员全工作流：秒级自动排程、甘特图手动拖拽、报工反馈闭环、瓶颈工序识别、相似工序连续生产优化、计划异常影响分析。算法能跑、业务能用、现场能落地。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Experience -->
+  <section id="experience">
+    <div class="section-title">工作经历</div>
+    <div class="timeline">
+
+      <div class="timeline-item">
+        <div class="card">
+          <div class="job-header">
+            <div>
+              <div class="job-title">高级算法工程师 / APS产品技术负责人</div>
+              <div class="job-company">悠桦林信息科技（上海）有限公司</div>
+            </div>
+            <span class="job-date">2018.05 — 至今</span>
+          </div>
+          <ul class="job-desc">
+            <li>作为APS产品线核心骨干，从0到1主导算法引擎落地与产品架构演进，覆盖航空排班与制造业排程两大核心业务。</li>
+            <li><strong>技术栈战略迁移（2023年起）：</strong>主导核心引擎从C++/Swig向纯Java的全量迁移，已完成全部线上切割，彻底消除C++人力紧缺的交付瓶颈。</li>
+            <li><strong>APS产品架构（2020年起）：</strong>自研Java高性能规则求解引擎，实现拖拽排程与自动排程的秒级响应；独立设计JSON流式数据总线和插件架构，核心引擎跨客户100%复用。</li>
+            <li><strong>航空机组排班（2018-2019）：</strong>将民航法规、机组资质、值勤时间等约束抽象为Gurobi数学模型；引入多线程并行加速，设计统计模型自动定位排班异常，问题排查效率提升数倍。</li>
+            <li><strong>团队管理：</strong>担任技术组长，负责代码架构Review与技术难点攻坚，搭建CI/CD流水线规范团队交付标准。</li>
+          </ul>
+          <div class="achievement">
+            <div class="achievement-title">核心成果</div>
+            <ul class="job-desc">
+              <li>完成C++向Java全栈迁移，招聘门槛从"稀缺C++人才"降为"成熟Java人才"</li>
+              <li>插件化APS架构成为公司所有制造业项目技术基线，新项目实施周期缩短30%-50%</li>
+              <li>支撑公司成功交付7+家头部客户，建立可复用商业案例库</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="card">
+          <div class="job-header">
+            <div>
+              <div class="job-title">软件工程师</div>
+              <div class="job-company">中软国际科技服务有限公司成都分公司</div>
+            </div>
+            <span class="job-date">2016.06 — 2018.04</span>
+          </div>
+          <ul class="job-desc">
+            <li>基于Linux系统进行需求开发与问题定位，负责高铁及地铁项目现网问题排查</li>
+            <li>App性能优化，多线程编程（利用锁特性充分发挥CPU性能），自动化用例维护</li>
+            <li>使用统计模型定位现网问题，保障服务长期高负荷稳定运行于Hadoop集群环境</li>
+            <li>CodeCC代码质量管控，CMake跨平台编译，降低维护成本</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="card">
+          <div class="job-header">
+            <div>
+              <div class="job-title">软件工程师</div>
+              <div class="job-company">早期项目经历</div>
+            </div>
+            <span class="job-date">2014.06 — 2016.05</span>
+          </div>
+          <ul class="job-desc">
+            <li>硬件串口独立软件开发（2015.05-2015.07，主要开发）</li>
+            <li>游艇模拟器开发（2014.06-2014.09）</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section id="projects">
+    <div class="section-title">项目经历</div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <div>
+          <div class="project-name">APS核心引擎Java化迁移（战略性项目）</div>
+          <div class="project-date">2023.01 — 至今</div>
+        </div>
+        <span class="project-role">负责人</span>
+      </div>
+      <p class="job-desc">公司核心引擎长期基于C++/Swig架构，跨语言调用增加维护成本，C++人才稀缺导致交付资源受限。主导规划分模块迁移路线，确保线上服务不中断；在Java体系中重新设计高性能规则求解引擎，省去Swig跨语言层，重新设计Java原生接口。</p>
+      <div class="achievement">
+        <div class="achievement-title">成果</div>
+        <p class="job-desc">已完成全量迁移与线上切割，服务稳定运行；跨团队协作无需接口封装，维护效率显著提升；人力瓶颈彻底解决。</p>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <div>
+          <div class="project-name">快消行业APS排程 — 联合利华 / 中粮可口可乐 / 易开盖</div>
+          <div class="project-date">2021.05 — 至今</div>
+        </div>
+        <span class="project-role">负责人</span>
+      </div>
+      <p class="job-desc"><strong>行业背景：</strong>快消工厂SKU品类多、批量小，同一产线需频繁切换产品，每次换型都带来停机损耗，排程人员需花费半天以上人工编排才能出一版计划，且换型次数难以优化。</p>
+      <p class="job-desc" style="margin-top:8px"><strong>核心痛点：</strong>多SKU频繁切换导致换型次数居高不下，产能利用率低；人工排程耗时长、依赖经验，计划质量不稳定。</p>
+      <p class="job-desc" style="margin-top:8px"><strong>解决方案：</strong>采用"相似工序连续生产 + SKU集批"策略——将工艺相近、交期相近的SKU自动聚合为批次，在排程引擎中优先连续排入同类产品，从根本上减少换型触发次数，实现产能最大化利用。</p>
+      <div class="achievement">
+        <div class="achievement-title">成果</div>
+        <ul class="job-desc">
+          <li>排程出结果时间从半天以上压缩至<strong>秒级</strong></li>
+          <li>换型次数减少 <strong>20%+</strong>，产能利用率提升 <strong>40%+</strong></li>
+          <li><strong>中粮可口可乐：</strong>综合考虑多约束条件，实现成本、能耗、切换时间最小化，交付率与机组利用率最大化，均衡使用产线</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <div>
+          <div class="project-name">电子制造APS排程 — 九州电子 / 海信电子 / 立讯精密</div>
+          <div class="project-date">2021.05 — 至今</div>
+        </div>
+        <span class="project-role">负责人</span>
+      </div>
+      <p class="job-desc"><strong>行业背景：</strong>电子制造工序复杂，SMT贴片与DIP插件存在两条不同工艺路径，部分线体为SMT双轨线体，可同时承接两道工序。客户此前依赖手工排产，面对多工艺路径时排程人员难以兼顾线体利用率与工序衔接。</p>
+      <p class="job-desc" style="margin-top:8px"><strong>核心痛点：</strong>传统多工序模型将每道工序独立处理，无法识别SMT双轨线体"一次上线完成两道工序"的特殊能力，导致线体利用率低、排程结果与实际产线不匹配。</p>
+      <p class="job-desc" style="margin-top:8px"><strong>解决方案：</strong>在排程引擎中增加线体能力识别逻辑——当订单工序可分配至SMT双轨或DIP线体时，自动将两道工序合并为一个逻辑工序处理，统一占用线体资源，消除工艺路径分叉带来的排程冲突。</p>
+      <div class="achievement">
+        <div class="achievement-title">成果</div>
+        <ul class="job-desc">
+          <li>方案准确还原双轨线体实际产能模型，客户从手工排产顺利切换至系统自动排程</li>
+          <li><strong>立讯精密：</strong>提升产能利用率，减少库存损失及生产成本</li>
+          <li><strong>海信日立：</strong>订单及时交付率提升 <strong>1%-3%</strong>，产成品周转较上年加速 <strong>14-17天</strong></li>
+          <li><strong>惠科股份：</strong>交期应答准确率提升 <strong>30%</strong>，库存积压降低 <strong>10%</strong></li>
+          <li><strong>记忆存储：</strong>工单准时交付率提升 <strong>5%</strong>，计划达成率提升 <strong>11%</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <div>
+          <div class="project-name">装备制造APS排程 — 郑煤机 / 奥克斯</div>
+          <div class="project-date">2021.05 — 至今</div>
+        </div>
+        <span class="project-role">负责人</span>
+      </div>
+      <p class="job-desc"><strong>行业背景：</strong>装备制造订单定制化程度高、工序多、交期压力大，计划工作依赖人工线下管理，集团多工厂资源难以统一调配。</p>
+      <p class="job-desc" style="margin-top:8px"><strong>核心痛点：</strong>计划工作分散、不透明，市场响应速度慢；多工厂资源利用率低，交期难以准确承诺。</p>
+      <p class="job-desc" style="margin-top:8px"><strong>解决方案：</strong>制定中长期主计划与短期日计划双层计划体系，实现计划工作线上化、集中化；多目标优化兼顾交期、产能与资源均衡，分钟级输出中长期计划。</p>
+      <div class="achievement">
+        <div class="achievement-title">成果</div>
+        <ul class="job-desc">
+          <li><strong>郑煤机：</strong>提升计划效率与市场响应速度，缩短交期，提升集团范围资源利用率，计划工作实现线上化集中化</li>
+          <li><strong>奥克斯：</strong>分钟级输出中长期计划，实现精益管控与多目标优化</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <div>
+          <div class="project-name">APS产品架构设计（从0到1）</div>
+          <div class="project-date">2020.01 — 至今</div>
+        </div>
+        <span class="project-role">架构负责人</span>
+      </div>
+      <p class="job-desc"><strong>核心挑战：</strong>APS需同时支撑快消、电子、装备等多个行业，各行业约束规则差异巨大，若每个客户单独开发引擎，维护成本不可控。</p>
+      <p class="job-desc" style="margin-top:8px"><strong>架构决策：</strong></p>
+      <ul class="job-desc" style="margin-top:4px">
+        <li><strong>插件化架构：</strong>将核心求解引擎与业务规则解耦，行业差异通过插件配置实现，核心引擎跨客户100%复用</li>
+        <li><strong>JSON流式数据总线：</strong>各功能模块通过统一数据格式串联，模块可任意组合衔接，新场景快速适配</li>
+        <li><strong>高性能规则求解引擎：</strong>基于策略模式设计，支持工序/机台/物料/人力多重约束，秒级出排程结果</li>
+        <li><strong>全场景交互支持：</strong>自动排程、甘特图手动拖拽、报工反馈闭环、计划异常预警，覆盖计划员全工作流</li>
+      </ul>
+      <div class="achievement">
+        <div class="achievement-title">成果</div>
+        <p class="job-desc">该架构成为公司所有制造业项目的技术基线，新项目实施周期缩短30%-50%，已支撑7+家头部企业稳定运行。</p>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <div>
+          <div class="project-name">航空公司机组排班系统</div>
+          <div class="project-date">2018.05 — 2019.06</div>
+        </div>
+        <span class="project-role">主要开发</span>
+      </div>
+      <p class="job-desc">将民航法规、机组资质、疲劳度等多维约束转化为Gurobi求解器可解析的数学模型，支持分钟级精密排班。用模板技术剥离硬编码，实现规则配置化管理。引入多线程并行加速大批量数据计算，基于统计模型自动检测排班掉环率及异常原因。</p>
+      <div class="achievement">
+        <div class="achievement-title">成果</div>
+        <p class="job-desc">排班效率相比客户原手工方式大幅提升；规则模板化使法规变更无需修改核心代码；问题定位效率通过统计模型提升数倍。</p>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <div>
+          <div class="project-name">外派优化项目（Matlab性能优化）</div>
+          <div class="project-date">2023.05 — 2024.06</div>
+        </div>
+        <span class="project-role">优化人员</span>
+      </div>
+      <p class="job-desc">使用Matlab语言，针对小量数据下的性能瓶颈进行优化。极短时间内完成Matlab基础学习，梳理全部业务内容，完成性能调优，及时通过项目验收，获得客户高度评价。</p>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <div>
+          <div class="project-name">高铁R2R3大数据分析系统</div>
+          <div class="project-date">2016.10 — 2018.05</div>
+        </div>
+        <span class="project-role">核心开发</span>
+      </div>
+      <p class="job-desc">基于Hadoop集群的大数据分布式计算系统，通过实时基站数据分析识别乘坐高铁的移动用户流量。负责高铁识别模块与数据关联模块的核心开发。</p>
+      <div class="achievement">
+        <div class="achievement-title">成果</div>
+        <ul class="job-desc">
+          <li>通过分析多线程锁特性，选用合适锁机制充分发挥CPU性能</li>
+          <li>使用统计模型定位现网问题，保障服务长期高负荷稳定运行于集群环境</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <div class="project-header">
+        <div>
+          <div class="project-name">地铁用户行为识别系统</div>
+          <div class="project-date">2017.11 — 2018.04</div>
+        </div>
+        <span class="project-role">核心开发</span>
+      </div>
+      <p class="job-desc">基于地铁用户行为特征识别地铁用户。解析地铁工参表，结合MR/L15数据进行用户分类与时序排序，通过CBB模型识别地铁用户并输出关联结果，数据按10M/100M分级存储。</p>
+    </div>
+
+  <!-- Skills -->
+  <section id="skills">
+    <div class="section-title">技术技能</div>
+    <div class="skills-grid">
+      <div class="skill-group">
+        <h4>核心领域</h4>
+        <span class="skill-tag hot">APS排程</span>
+        <span class="skill-tag hot">运筹优化</span>
+        <span class="skill-tag hot">算法建模</span>
+        <span class="skill-tag">规则引擎</span>
+      </div>
+      <div class="skill-group">
+        <h4>编程语言</h4>
+        <span class="skill-tag hot">Java</span>
+        <span class="skill-tag">C++</span>
+        <span class="skill-tag">Matlab</span>
+        <span class="skill-tag">Python</span>
+      </div>
+      <div class="skill-group">
+        <h4>求解器 / 算法</h4>
+        <span class="skill-tag hot">Gurobi</span>
+        <span class="skill-tag">多线程并行</span>
+        <span class="skill-tag">统计模型</span>
+        <span class="skill-tag">流处理架构</span>
+      </div>
+      <div class="skill-group">
+        <h4>工程 / 架构</h4>
+        <span class="skill-tag">插件化架构</span>
+        <span class="skill-tag">CI/CD</span>
+        <span class="skill-tag">GitLab</span>
+        <span class="skill-tag">CMake</span>
+        <span class="skill-tag">Swig</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Education -->
+  <section id="education">
+    <div class="section-title">教育经历</div>
+    <div class="card">
+      <div class="edu-card">
+        <div class="edu-icon">🎓</div>
+        <div>
+          <div class="job-title">福建工程学院</div>
+          <div style="color:#888;font-size:0.9rem;margin-top:4px;">本科 · 软件工程 · 2010 — 2014</div>
+        </div>
+      </div>
+    </div>
+    <div class="award">
+      <div class="award-icon">🏆</div>
+      <div>
+        <strong>公司2023年度优秀个人</strong>
+        <div style="font-size:0.85rem;color:#888;margin-top:2px;">悠桦林信息科技（上海）有限公司</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>陈文核 · 算法工程师 · 15985856370 · 479558399@qq.com</p>
+</footer>
+
+<script>
+  // Scroll animation
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('section').forEach(s => observer.observe(s));
+
+  // Nav active state
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  });
+</script>
+</body>
+</html>
